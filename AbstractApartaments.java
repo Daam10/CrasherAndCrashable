@@ -28,7 +28,7 @@ public abstract class AbstractApartaments<OutputType, InputType, ToBreakDetermin
 	public boolean hasThingsToCrash() {
 		return things.isEmpty();
 	}
-
+	
 	@Override
 	public boolean crashNext() {
 		if(!things.isEmpty()) {
@@ -36,7 +36,7 @@ public abstract class AbstractApartaments<OutputType, InputType, ToBreakDetermin
 			if(crasher.canCrash(toCrash)) {
 				Converter<InputType> converter = toCrash.getConverter();
 				converter.setValueToConvert(toCrash.breakDown(crasher));
-				toUserOutputs.add((OutputType) converter.convert());
+				toUserOutputs.add((OutputType) converter.convert(getOutputObject().getClass()));
 				return true;
 			} else {
 				return false;
@@ -52,6 +52,7 @@ public abstract class AbstractApartaments<OutputType, InputType, ToBreakDetermin
 			out.toOutput(toUserOutputs.poll());
 		}
 	}
-
+	
+	abstract OutputType getOutputObject();
 }
 

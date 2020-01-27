@@ -7,4 +7,9 @@ public class MyApartaments extends AbstractApartaments<String, String, Integer>{
 	public MyApartaments(Collection<Thing> toCrush, CrasherUI<Integer> crasher) {
 		super(toCrush, crasher, new ConsolePrinter());
 	}
+
+	@Override
+	String getOutputObject() {
+		return "";
+	}
 }
