@@ -2,6 +2,6 @@ package Interfaces;
 
 public interface ApartamentUI {
 	boolean hasThingsToCrash();
-	boolean crashNext();
+	<T>boolean crashNext();
 	void pullToUserOutputs();
 }

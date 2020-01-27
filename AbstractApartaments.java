@@ -4,8 +4,8 @@ import java.util.function.Function;
 
 import Interfaces.*;
 
-public abstract class AbstractApartaments<OutputType, InputType, ToBreakDeterminator> implements ApartamentUI{
-	private Stack<Crashable<InputType, ToBreakDeterminator>> things;
+public abstract class AbstractApartaments<OutputType, ToBreakDeterminator> implements ApartamentUI{
+	private Stack<Crashable<?, ToBreakDeterminator>> things;
 	
 	private CrasherUI<ToBreakDeterminator> crasher;
 	
@@ -17,7 +17,7 @@ public abstract class AbstractApartaments<OutputType, InputType, ToBreakDetermin
 		toUserOutputs = new ConcurrentLinkedQueue();
 	}
 	
-	public AbstractApartaments(Collection<? extends Crashable<InputType, ToBreakDeterminator>> toCrush, CrasherUI<ToBreakDeterminator> crasher, ToUserOutputUI<OutputType> out){
+	public AbstractApartaments(Collection<Crashable<?, ToBreakDeterminator>> toCrush, CrasherUI<ToBreakDeterminator> crasher, ToUserOutputUI<OutputType> out){
 		things.addAll(toCrush);
 		this.crasher = crasher;
 		this.out = out;
@@ -30,11 +30,11 @@ public abstract class AbstractApartaments<OutputType, InputType, ToBreakDetermin
 	}
 	
 	@Override
-	public boolean crashNext() {
+	public <ToCrashInput>boolean crashNext() {
 		if(!things.isEmpty()) {
-			Crashable<InputType, ToBreakDeterminator> toCrash = things.pop();
+			Crashable<ToCrashInput, ToBreakDeterminator> toCrash = (Crashable<ToCrashInput, ToBreakDeterminator>) things.pop();
 			if(crasher.canCrash(toCrash)) {
-				Converter<InputType> converter = toCrash.getConverter();
+				Converter<ToCrashInput> converter = toCrash.getConverter();
 				converter.setValueToConvert(toCrash.breakDown(crasher));
 				toUserOutputs.add((OutputType) converter.convert(getOutputObject().getClass()));
 				return true;
@@ -45,6 +45,8 @@ public abstract class AbstractApartaments<OutputType, InputType, ToBreakDetermin
 			throw new NoSuchElementException();
 		}
 	}
+	
+	
 
 	@Override
 	public void pullToUserOutputs() {
